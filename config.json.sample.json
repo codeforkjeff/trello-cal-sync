@@ -1,0 +1,11 @@
+{
+	"trello": {
+		"member":"my_trello_username",
+        "api_key": "something",
+        "api_secret": "blahblahblah",
+        "token": "blahblahblah"
+	},
+	"google_calendar": {
+		"name": "Trello Calendar"
+	}
+}
