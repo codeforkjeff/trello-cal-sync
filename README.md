@@ -41,6 +41,17 @@ into your cloned repo directory.
 It's highly recommended you create a separate Google calendar for your Trello
 cards. Create one and put the name of it in your `config.json` file.
 
+To use the calendar in Outlook (ugh):
+- go to the "Settings and sharing" screen for the Google calendar
+- go to "Integrate calendar" section
+- copy the "Secret address in iCal format" address
+- in Outlook, right-click "My Calendars" and select "Add Calendar" -> "From Internet..."
+and paste in the address
+- sometimes Outlook gets messed up and stops properly syncing the calendar;
+if this happens, remove it from Outlook, go to the Google calendar settings
+and click the "Reset" button for the secret address, then re-add the
+calendar to Outlook using the new address
+
 ### The Trello Parts:
 
 Get your Trello API Key from here: https://trello.com/app-key
