@@ -19,6 +19,7 @@ class Trello:
 
         self.member = member
         self.cards = []
+        self.list_cache = {}
 
         self.get_member_cards()
 
@@ -29,9 +30,20 @@ class Trello:
         self.preprocess_cards()
 
 
+    def get_list_name(self, list_id):
+        """ cache trello List objects """
+        if list_id not in self.list_cache:
+            list_data = self.trello.get_list(list_id)
+            self.list_cache[list_id] = list_data
+        return self.list_cache[list_id].name
+
+
     def preprocess_cards(self):
-        # localize dates
         for c in self.cards:
+            # store actual list name
+            c['listName'] = self.get_list_name(c['idList'])
+
+            # localize dates
             c['dateLastActivity'] = datetime.datetime.fromisoformat(c['dateLastActivity'].replace("Z", "+00:00")).astimezone()
             if c['due']:
                 c['due'] = datetime.datetime.fromisoformat(c['due'].replace("Z", "+00:00")).astimezone()
@@ -198,8 +210,16 @@ class Synchronizer:
         translate a trello card to a data structure representing an event that
         can be used w/ the google API
         """
+
+        in_progress = ""
+        if "in progress" in card['listName'].lower() or \
+            "doing" in card['listName'].lower():
+            in_progress = "(IN PROGRESS) "
+
+        summary = 'DUE: ' + in_progress + card['name']
+
         event = {
-          'summary': 'DUE: ' + card['name'],
+          'summary': summary,
           # outlook doesn't pick up or display source.url, so put it in the description
           'description': card['shortUrl'],
           'source': {
