@@ -235,6 +235,17 @@ class Synchronizer:
         return event
 
 
+    def event_needs_update(self, existing_event, event_data_from_card):
+        """
+        compares existing calendar event and new event data structure
+        generated from trello card, and returns True if the event needs
+        to be updated
+        """
+        return existing_event['start']['dateTime'] != event_data_from_card['start']['dateTime'] or \
+            existing_event['summary'] != event_data_from_card['summary'] or \
+            existing_event.get('description') != event_data_from_card.get('description')
+
+
     def execute(self):
         print("Fetching all calendar events")
         events = self.calendar.get_all_events()
@@ -256,22 +267,19 @@ class Synchronizer:
         # create or update events for cards that need to be completed
         for card in self.trello.get_to_complete():
 
-            to_update = [e for e in events if e['source']['url'] == card['shortUrl']]
+            existing_events = [e for e in events if e['source']['url'] == card['shortUrl']]
 
-            event_data_for_card = self.translate(card)
+            event_data_from_card = self.translate(card)
 
-            if len(to_update) > 0:
-                for e in to_update:
-                    needs_update = \
-                        e['start']['dateTime'] != event_data_for_card['start']['dateTime'] or \
-                        e['summary'] != event_data_for_card['summary'] or \
-                        e.get('description') != event_data_for_card.get('description')
+            if len(existing_events) > 0:
+                for existing_event in existing_events:
+                    needs_update = self.event_needs_update(existing_event, event_data_from_card)
 
                     if needs_update:
                         print("Updating calendar event w/ changed card info")
-                        self.calendar.update_event(e['id'], event_data_for_card)
+                        self.calendar.update_event(existing_event['id'], event_data_from_card)
             else:
-                self.calendar.create_event(event_data_for_card)
+                self.calendar.create_event(event_data_from_card)
 
 
 def read_config():
