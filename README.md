@@ -33,7 +33,8 @@ the steps below.
 
 ### Setting up the Google Parts (using a Service Account for auth):
 
-This is a bit complicated.
+This is a bit complicated but is the most durable way to set up authentication
+and authorization.
 
 Go to the Google APIs Console: https://console.developers.google.com/
 
@@ -52,17 +53,6 @@ use your existing calendar.
 It looks like "blah@group.calendar.google.com"
 - Copy the calendar id into the `config.json` file.
 
-To use the calendar in Outlook (ugh):
-- go to the "Settings and sharing" screen for the Google calendar
-- go to "Integrate calendar" section
-- copy the "Secret address in iCal format" address
-- in Outlook, right-click "My Calendars" and select "Add Calendar" -> "From Internet..."
-and paste in the address
-- sometimes Outlook gets messed up and stops properly syncing the calendar;
-if this happens, remove it from Outlook, go to the Google calendar settings
-and click the "Reset" button for the secret address, then re-add the
-calendar to Outlook using the new address
-
 ### Alternative: Setting up the Google Parts (using OAuth):
 
 If you can't get the above to work, try this:
@@ -75,9 +65,9 @@ into your cloned repo directory.
 Put the name of the calendar in the `config.json` and set `auth_type` to
 "oauth"
 
-If you use this method of authorization, then the first time you run the
-script, it will open a browser window for Google authentication and to
-confirm permission to access your calendar.
+If you use this method, then the first time you run the script, it will open
+a browser window for Google authentication and to confirm permission to access
+your calendar.
 
 ### Setting up the Trello Parts:
 
@@ -97,6 +87,20 @@ or something.
 . ~/trello-cal-sync-env/Scripts/activate
 python trello_cal_sync.py
 ```
+
+## How to use your Google calendar in Outlook
+
+Not directly relevant to this project but sticking this info here anyway.
+
+- go to the "Settings and sharing" screen for the Google calendar
+- go to "Integrate calendar" section
+- copy the "Secret address in iCal format" address
+- in Outlook, right-click "My Calendars" and select "Add Calendar" -> "From Internet..."
+and paste in the address
+- sometimes Outlook gets messed up and stops properly syncing the calendar;
+if this happens, remove it from Outlook, go to the Google calendar settings
+and click the "Reset" button for the secret address, then re-add the
+calendar to Outlook using the new address
 
 ## Customization
 
