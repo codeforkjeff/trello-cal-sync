@@ -2,4 +2,6 @@ __pycache__
 allcards.html
 config.json
 credentials.json
+service-account.json
 token.pickle
+*.pyc

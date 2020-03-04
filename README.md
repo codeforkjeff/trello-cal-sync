@@ -31,15 +31,26 @@ pip install -r ./trello-cal-sync/requirements.txt
 Copy `config.json.sample` to `config.json`. Fill in the fields as you complete
 the steps below.
 
-### The Google Parts:
+### Setting up the Google Parts (using a Service Account for auth):
 
-Go to this page: https://developers.google.com/calendar/quickstart/python
+This is a bit complicated.
 
-Click "Enable the Google Calendar API" and download the `credentials.json` file
-into your cloned repo directory.
+Go to the Google APIs Console: https://console.developers.google.com/
 
-It's highly recommended you create a separate Google calendar for your Trello
-cards. Create one and put the name of it in your `config.json` file.
+- Create a new Project
+- Enable the Google Calendar API for that project.
+- Under Credentials, create a Service Account. When generating keys, download
+the file in .json format. Copy this to a file named `service-account.json`
+in this repo's directory.
+- Take note of the account's auto-generated email address.
+
+Now create a new Google calendar. It's highly recommended that you do NOT
+use your existing calendar.
+
+- Share it with the Service Account's email address.
+- Note the calendar's ID in the "Integrate Calendar" section of its settings.
+It looks like "blah@group.calendar.google.com"
+- Copy the calendar id into the `config.json` file.
 
 To use the calendar in Outlook (ugh):
 - go to the "Settings and sharing" screen for the Google calendar
@@ -52,7 +63,23 @@ if this happens, remove it from Outlook, go to the Google calendar settings
 and click the "Reset" button for the secret address, then re-add the
 calendar to Outlook using the new address
 
-### The Trello Parts:
+### Alternative: Setting up the Google Parts (using OAuth):
+
+If you can't get the above to work, try this:
+
+Go to this page: https://developers.google.com/calendar/quickstart/python
+
+Click "Enable the Google Calendar API" and download the `credentials.json` file
+into your cloned repo directory.
+
+Put the name of the calendar in the `config.json` and set `auth_type` to
+"oauth"
+
+If you use this method of authorization, then the first time you run the
+script, it will open a browser window for Google authentication and to
+confirm permission to access your calendar.
+
+### Setting up the Trello Parts:
 
 Get your Trello API Key from here: https://trello.com/app-key
 
@@ -70,9 +97,6 @@ or something.
 . ~/trello-cal-sync-env/Scripts/activate
 python trello_cal_sync.py
 ```
-
-The first time you run the script, it will open a browser window for Google
-authentication and to confirm permission to access your calendar.
 
 ## Customization
 

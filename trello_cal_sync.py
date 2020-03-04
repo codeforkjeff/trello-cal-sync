@@ -7,6 +7,7 @@ import pickle
 import pprint
 
 from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from trello import TrelloClient
@@ -130,40 +131,51 @@ class Calendar:
 
     SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-    def __init__(self, name):
+    def __init__(self, id=None, name=None, auth_type="service_account"):
+
+        self.auth_type = auth_type
         self.service = self.get_service()
 
-        response = self.service.calendarList().list().execute()
-        matches = [cal for cal in response['items'] if cal['summary'] == name]
-        if len(matches) == 0:
-            msg = f"Couldn't find calendar with name: {name}"
-            msg += ". Available calendars: " + [cal['summary'] for cal in response['items']].join(", ")
-            raise Exception(msg)
+        if id:
+            self.calendar_id = id
+        else:
+            # WARNING: calendarList endpoint doesn't seem to work with the service account.
+            # This will fail if you use that method and don't provide a calendar id.
+            response = self.service.calendarList().list().execute()
+            matches = [cal for cal in response['items'] if cal['summary'] == name]
+            if len(matches) == 0:
+                msg = f"Couldn't find calendar with name: {name}"
+                msg += ". Available calendars: " + ", ".join([cal['summary'] for cal in response['items']])
+                raise Exception(msg)
 
-        self.calendar_id = matches[0]['id']
+            self.calendar_id = matches[0]['id']
 
 
     def get_service(self):
         """ adapted from quickstart docs """
 
         creds = None
-        # The file token.pickle stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
-                creds = pickle.load(token)
-        # If there are no (valid) credentials available, let the user log in.
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', self.SCOPES)
-                creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
-            with open('token.pickle', 'wb') as token:
-                pickle.dump(creds, token)
+
+        if self.auth_type == "service_account":
+            creds = service_account.Credentials.from_service_account_file('service-account.json', scopes=self.SCOPES)
+        elif self.auth_type == "oauth":
+            # The file token.pickle stores the user's access and refresh tokens, and is
+            # created automatically when the authorization flow completes for the first
+            # time.
+            if os.path.exists('token.pickle'):
+                with open('token.pickle', 'rb') as token:
+                    creds = pickle.load(token)
+            # If there are no (valid) credentials available, let the user log in.
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                else:
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        'credentials.json', self.SCOPES)
+                    creds = flow.run_local_server(port=0)
+                # Save the credentials for the next run
+                with open('token.pickle', 'wb') as token:
+                    pickle.dump(creds, token)
 
         service = build('calendar', 'v3', credentials=creds)
 
@@ -222,6 +234,7 @@ class Synchronizer:
           'summary': summary,
           # outlook doesn't pick up or display source.url, so put it in the description
           'description': card['shortUrl'],
+          # note that service account can't seem to read 'source' fields
           'source': {
             'url': card['shortUrl'],
           },
@@ -252,14 +265,14 @@ class Synchronizer:
 
         # remove cards that are Done b/c they clutter my calendar and are annoying
         for card in self.trello.get_done():
-            to_delete = [e for e in events if e['source']['url'] == card['shortUrl']]
+            to_delete = [e for e in events if e['description'] == card['shortUrl']]
             for e in to_delete:
                 print("Deleting done event from calendar")
                 self.calendar.delete_event(e['id'])
 
         # remove events for cards that got deleted
         for event in events:
-            card_exists = len([card for card in self.trello.cards if event['source']['url'] == card['shortUrl']]) > 0
+            card_exists = len([card for card in self.trello.cards if event['description'] == card['shortUrl']]) > 0
             if not card_exists:
                 print("Deleting event that no longer has a trello card")
                 self.calendar.delete_event(event['id'])
@@ -267,7 +280,7 @@ class Synchronizer:
         # create or update events for cards that need to be completed
         for card in self.trello.get_to_complete():
 
-            existing_events = [e for e in events if e['source']['url'] == card['shortUrl']]
+            existing_events = [e for e in events if e['description'] == card['shortUrl']]
 
             event_data_from_card = self.translate(card)
 

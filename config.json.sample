@@ -6,6 +6,8 @@
         "token": "blahblahblah"
 	},
 	"google_calendar": {
-		"name": "Trello Calendar"
+		"id": "something@group.calendar.google.com",
+		"name": "Trello Calendar",
+		"auth_type": "service_account"
 	}
 }
