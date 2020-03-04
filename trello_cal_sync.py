@@ -40,15 +40,21 @@ class Trello:
         return self.list_cache[list_id].name
 
 
+    def date_str_to_datetime_obj(self, date_str):
+        # trim off miscroseconds and Z char, and set to UTC
+        trimmed = date_str[0:-5] + "+0000"
+        return datetime.datetime.strptime(trimmed, "%Y-%m-%dT%H:%M:%S%z").astimezone()
+
+
     def preprocess_cards(self):
         for c in self.cards:
             # store actual list name
             c['listName'] = self.get_list_name(c['idList'])
 
             # localize dates
-            c['dateLastActivity'] = datetime.datetime.fromisoformat(c['dateLastActivity'].replace("Z", "+00:00")).astimezone()
+            c['dateLastActivity'] = self.date_str_to_datetime_obj(c['dateLastActivity'])
             if c['due']:
-                c['due'] = datetime.datetime.fromisoformat(c['due'].replace("Z", "+00:00")).astimezone()
+                c['due'] = self.date_str_to_datetime_obj(c['due'])
 
 
     def get_done(self):
