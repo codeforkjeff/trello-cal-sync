@@ -39,6 +39,9 @@ class Trello:
         """ cache trello List objects """
         if list_id not in self.list_cache:
             list_data = self.trello.get_list(list_id)
+
+            time.sleep(0.5)
+
             self.list_cache[list_id] = list_data
         return self.list_cache[list_id].name
 
@@ -352,4 +355,7 @@ def debug_trello():
 if __name__ == '__main__':
     config = read_config()
     for sync_item in config["sync"]:
+        start = time.time()
         sync(**sync_item)
+        elapsed = time.time() - start
+        print(f"Sync took {elapsed}s")
