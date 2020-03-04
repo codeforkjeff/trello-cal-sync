@@ -18,6 +18,10 @@ Though my requirements were very specific, this script is written to be
 highly customizable, so you can probably make it work to suit your own needs
 fairly easily.
 
+## Requirements
+
+Python >= 3.6
+
 ## Installation
 
 ```
@@ -38,20 +42,20 @@ and authorization.
 
 Go to the Google APIs Console: https://console.developers.google.com/
 
-- Create a new Project
-- Enable the Google Calendar API for that project.
+- Create a new Project called "Trello Sync" or something
+- Enable the Google Calendar API for that project
 - Under Credentials, create a Service Account. When generating keys, download
 the file in .json format. Copy this to a file named `service-account.json`
-in this repo's directory.
-- Take note of the account's auto-generated email address.
+in this repo's directory
+- Take note of the account's auto-generated email address
 
 Now create a new Google calendar. It's highly recommended that you do NOT
-use your existing calendar.
+use your existing personal calendar.
 
-- Share it with the Service Account's email address.
+- Share it with the Service Account's email address
 - Note the calendar's ID in the "Integrate Calendar" section of its settings.
 It looks like "blah@group.calendar.google.com"
-- Copy the calendar id into the `config.json` file.
+- Copy the calendar id into the `config.json` file
 
 ### Alternative: Setting up the Google Parts (using OAuth):
 
@@ -92,12 +96,11 @@ python trello_cal_sync.py
 
 Not directly relevant to this project but sticking this info here anyway.
 
-- go to the "Settings and sharing" screen for the Google calendar
-- go to "Integrate calendar" section
+- go to "Integrate calendar" section of the Google calendar settings
 - copy the "Secret address in iCal format" address
-- in Outlook, right-click "My Calendars" and select "Add Calendar" -> "From Internet..."
-and paste in the address
-- sometimes Outlook gets messed up and stops properly syncing the calendar;
+- in Outlook, right-click "My Calendars" and select "Add Calendar" -> "From
+Internet..." and paste in the address
+- sometimes Outlook gets messed up and stops syncing the calendar correctly;
 if this happens, remove it from Outlook, go to the Google calendar settings
 and click the "Reset" button for the secret address, then re-add the
 calendar to Outlook using the new address
