@@ -4,4 +4,5 @@ config.json
 credentials.json
 service-account.json
 token.pickle
+trello_cal_sync.log
 *.pyc

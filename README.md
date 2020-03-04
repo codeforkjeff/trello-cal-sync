@@ -24,16 +24,10 @@ Python >= 3.6
 
 ## Installation
 
-```
-# assumes repo has been cloned into your home dir
-cd ~
-python -m venv ./trello-cal-sync-env
-. ./trello-cal-sync-env/Scripts/activate
-pip install -r ./trello-cal-sync/requirements.txt
-```
+Clone this repo in your home directory.
 
 Copy `config.json.sample` to `config.json`. Fill in the fields as you complete
-the steps below.
+the setup steps below.
 
 ### Setting up the Google Parts (using a Service Account for auth):
 
@@ -84,13 +78,16 @@ file.
 
 ## Running the Script
 
-You need to run this periodically to sync. To automate it, set up a cron job
-or something.
+Run this in a bash shell, either on Windows or Linux:
 
 ```
-. ~/trello-cal-sync-env/Scripts/activate
-python trello_cal_sync.py
+./run_trello_cal_sync.sh
 ```
+
+The script automatically sets up the virtualenv and installs the libraries.
+
+You need to run this periodically to sync. To automate it, set up a cron job
+or something.
 
 ## How to use your Google calendar in Outlook
 
