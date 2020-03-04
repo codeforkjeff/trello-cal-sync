@@ -22,6 +22,7 @@ class Trello:
         self.cards = []
         self.list_cache = {}
 
+        print("Fetching cards")
         self.get_member_cards()
 
 
