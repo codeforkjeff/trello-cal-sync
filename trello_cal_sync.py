@@ -40,7 +40,8 @@ class Trello:
         if list_id not in self.list_cache:
             list_data = self.trello.get_list(list_id)
 
-            time.sleep(0.5)
+            # ensure we stay under 100 hits per 10 sec period limit
+            time.sleep(0.15)
 
             self.list_cache[list_id] = list_data
         return self.list_cache[list_id].name
