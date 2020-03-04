@@ -22,7 +22,7 @@ class Trello:
         self.cards = []
         self.list_cache = {}
 
-        print("Fetching cards")
+        print(f"Fetching cards for {self.member}")
         self.get_member_cards()
 
 
@@ -303,17 +303,18 @@ def read_config():
     """
     config = json.load(open("config.json", "r"))
 
-    for class_arg in [key for key in config.keys() if key.endswith("_class")]:
-        classname = config[class_arg]
-        try:
-            class_ = eval(classname)
-        except:
-            raise Exception(f"Couldn't find the class specifed in arg {class_arg} with name '{classname}'")
+    for sync_item in config["sync"]:
+        for class_arg in [key for key in sync_item.keys() if key.endswith("_class")]:
+            classname = sync_item[class_arg]
+            try:
+                class_ = eval(classname)
+            except:
+                raise Exception(f"Couldn't find the class specifed in arg {class_arg} with name '{classname}'")
 
-        if not inspect.isclass(class_):
-            raise Exception(f"{classname} isn't a class, fix your config.json")
+            if not inspect.isclass(class_):
+                raise Exception(f"{classname} isn't a class, fix your config.json")
 
-        config[class_arg] = class_
+            sync_item[class_arg] = class_
     return config
 
 
@@ -341,4 +342,5 @@ def debug_trello():
 
 if __name__ == '__main__':
     config = read_config()
-    sync(**config)
+    for sync_item in config["sync"]:
+        sync(**sync_item)
