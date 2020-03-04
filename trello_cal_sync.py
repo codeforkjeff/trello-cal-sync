@@ -5,6 +5,7 @@ import json
 import os.path
 import pickle
 import pprint
+import time
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -15,12 +16,14 @@ from trello import TrelloClient
 
 class Trello:
 
+    # cache shared across all instances of this class
+    list_cache = {}
+
     def __init__(self, member, api_key, api_secret, token):
         self.trello = TrelloClient(api_key=api_key, api_secret=api_secret, token=token)
 
         self.member = member
         self.cards = []
-        self.list_cache = {}
 
         print(f"Fetching cards for {self.member}")
         self.get_member_cards()
