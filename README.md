@@ -8,11 +8,11 @@ for each board. It didn't meet my needs but it may work for you.
 
 Here's what I wanted:
 
-- All my cards should be synced to a single calendar
+- All my cards, across all boards, should be synced to a single calendar
 - Only "to be completed" cards should show up in the calendar; completed cards
 should be removed to avoid clutter
-- What counts as "to be completed" and "completed" may vary, possibly across
-boards, in the future
+- What counts as "to be completed," "in progress," and "completed" may vary,
+possibly by board, in the future
 
 Though my requirements were very specific, this script is written to be
 highly customizable, so you can probably make it work to suit your own needs
