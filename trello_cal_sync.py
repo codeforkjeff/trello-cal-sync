@@ -360,6 +360,10 @@ if __name__ == '__main__':
         try:
             sync(**sync_item)
         except Exception as e:
+            # if script fails b/c of trello API limit, wait a bit
+            # so next sync doesn't fail for same reason
+            time.sleep(11)
+
             print(f"Error while syncing {sync_item['trello']['member']}: {e}")
             print("Continuing with next sync item")
         elapsed = time.time() - start
