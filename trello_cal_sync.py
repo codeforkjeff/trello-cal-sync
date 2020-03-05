@@ -357,6 +357,10 @@ if __name__ == '__main__':
     config = read_config()
     for sync_item in config["sync"]:
         start = time.time()
-        sync(**sync_item)
+        try:
+            sync(**sync_item)
+        except Exception as e:
+            print(f"Error while syncing {sync_item['trello']['member']}: {e}")
+            print("Continuing with next sync item")
         elapsed = time.time() - start
         print(f"Sync took {elapsed}s")
