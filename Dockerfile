@@ -10,7 +10,5 @@ WORKDIR /app
 
 VOLUME /app
 
-#RUN touch /app/run_trello_cal_sync.sh
-
 ENTRYPOINT /app/trello-cal-sync/run_trello_cal_sync.sh
 
