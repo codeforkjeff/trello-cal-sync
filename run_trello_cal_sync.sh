@@ -24,6 +24,8 @@ needs_install=0
 if [ ! -d "$working_dir/trello-cal-sync-env" ]; then
 	echo "Creating virtualenv"
 	$python_exe -m venv $working_dir/trello-cal-sync-env
+	$python_exe -m pip install --upgrade setuptools
+	$python_exe -m pip install --upgrade wheel
 	$python_exe -m pip install --upgrade pip
 	needs_install=1
 fi
