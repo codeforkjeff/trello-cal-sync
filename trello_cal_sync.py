@@ -262,13 +262,22 @@ class Synchronizer:
         return event
 
 
+    def dates_equal(self, date1_str, date2_str):
+        """
+        returns True if the two date strings are conceptually the same time
+        """
+        d1 = datetime.datetime.strptime(date1_str, "%Y-%m-%dT%H:%M:%S%z")
+        d2 = datetime.datetime.strptime(date2_str, "%Y-%m-%dT%H:%M:%S%z")
+        return d1==d2
+
+
     def event_needs_update(self, existing_event, event_data_from_card):
         """
         compares existing calendar event and new event data structure
         generated from trello card, and returns True if the event needs
         to be updated
         """
-        return existing_event['start']['dateTime'] != event_data_from_card['start']['dateTime'] or \
+        return not self.dates_equal(existing_event['start']['dateTime'], event_data_from_card['start']['dateTime']) or \
             existing_event['summary'] != event_data_from_card['summary'] or \
             existing_event.get('description') != event_data_from_card.get('description')
 
