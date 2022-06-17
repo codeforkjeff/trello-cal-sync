@@ -8,11 +8,13 @@ RUN mkdir /app
 
 WORKDIR /app
 
-COPY requirements.txt .
-
 RUN pip install --upgrade setuptools && \
     pip install --upgrade wheel && \
     pip install --upgrade pip
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY . .
 
