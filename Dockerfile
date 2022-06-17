@@ -2,7 +2,7 @@
 
 FROM alpine:3.16.0
 
-RUN apk update && apk upgrade && apk add git make python3 py3-pip py3-virtualenv vim
+RUN apk update && apk upgrade && apk add python3 py3-pip py3-virtualenv vim
 
 RUN mkdir /app
 
