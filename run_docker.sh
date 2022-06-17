@@ -3,7 +3,6 @@
 docker run \
     --rm \
     --name trello-cal-sync-container \
-    -v trello-cal-sync-volume:"/app" \
-    -v "$(pwd)":"/app/trello-cal-sync" \
+    -v "$(pwd)/service-account.json:"/app/service-account.json" \
+    -v "$(pwd)/config.json:"/app/config.json" \
     trello-cal-sync-image
-
