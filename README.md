@@ -76,17 +76,14 @@ Click the "Token" link on that page to generate a token.
 Copy the api key, secret, and token in the trello section of your `config.json`
 file.
 
-## Running the Script
-
-Run this in a bash shell, either on Windows or Linux:
+## Running this
 
 ```
-./run_trello_cal_sync.sh
+docker build . -t trello-cal-sync-image
+./run_docker.sh
 ```
 
-The script automatically sets up the virtualenv and installs the libraries.
-
-You need to run this periodically to sync. To automate it, set up a cron job
+Run `run_docker.sh` periodically to sync. To automate it, set up a cron job
 or something.
 
 ## How to use your Google calendar in Outlook
