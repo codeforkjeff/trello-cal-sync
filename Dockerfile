@@ -1,14 +1,21 @@
 # docker build . -t trello-cal-sync-image
 
-FROM ubuntu:20.04
+FROM alpine:3.16.0
 
-RUN apt-get update && apt-get -y install git make python3 python3-pip python3-venv vim virtualenvwrapper
+RUN apk update && apk upgrade && apk add python3 py3-pip py3-virtualenv vim
 
 RUN mkdir /app
 
 WORKDIR /app
 
-VOLUME /app
+RUN pip install --upgrade setuptools && \
+    pip install --upgrade wheel && \
+    pip install --upgrade pip
 
-ENTRYPOINT /app/trello-cal-sync/run_trello_cal_sync.sh
+COPY requirements.txt .
 
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["python3", "trello_cal_sync.py"]
