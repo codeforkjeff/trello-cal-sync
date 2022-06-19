@@ -2,7 +2,7 @@
 
 FROM alpine:3.16.0
 
-RUN apk update && apk upgrade && apk add python3 py3-pip py3-virtualenv vim
+RUN apk --no-cache add python3 py3-pip py3-virtualenv vim
 
 RUN mkdir /app
 
@@ -15,6 +15,8 @@ RUN pip install --upgrade setuptools && \
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
+
+RUN pip cache purge
 
 COPY . .
 
